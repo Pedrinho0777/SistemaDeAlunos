@@ -8,6 +8,7 @@ namespace ProjetoCurso01.Dao
 {
     public class DbSql
     {
-        public readonly string conexaoSqlServer = @"data source=TESTE;Integrated Security=SSPI;Initial Catalog=BancoTeste";
+        //String de conexão com o banco de dados
+        public readonly string conexaoSqlServer = @"data source=SUPORTE;Integrated Security=SSPI;Initial Catalog=BancoTeste";
     }
 }

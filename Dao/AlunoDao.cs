@@ -44,7 +44,7 @@ namespace ProjetoCurso01.Dao
         public void AlterarAluno(AlunoDto aluno)
         {
             //Abre a conexão, e depois fecha quando terminar de usar
-            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            using (SqlConnection conexao = new SqlConnection(conexaoSqlServer))
             {
                 try
                 {
@@ -52,7 +52,7 @@ namespace ProjetoCurso01.Dao
                         "sexo =@sexo,data_alteracao =@data_alteracao WHERE id_aluno =@id_aluno";
                     SqlCommand cmd = new SqlCommand(sql, conexao);
                     cmd.Parameters.AddWithValue("id_aluno", aluno.id_aluno);
-                    cmd.Parameters.AddWithValue("nome",aluno.nome);
+                    cmd.Parameters.AddWithValue("nome", aluno.nome);
                     cmd.Parameters.AddWithValue("data_nascimento", aluno.data_nascimento);
                     cmd.Parameters.AddWithValue("sexo", aluno.sexo);
                     cmd.Parameters.AddWithValue("data_alteracao", aluno.data_UltimaAlteracao);
@@ -64,7 +64,7 @@ namespace ProjetoCurso01.Dao
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Erro " + e.Message);   
+                    Console.WriteLine("Erro " + e.Message);
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace ProjetoCurso01.Dao
         public void DeletarAluno(int? id)
         {
             //Abre a conexão e depois fecha quando terminar de usar
-            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            using (SqlConnection conexao = new SqlConnection(conexaoSqlServer))
             {
                 try
                 {
@@ -143,7 +143,7 @@ namespace ProjetoCurso01.Dao
         //Método para verificar se o id existe no banco de dados 
         public bool VerificaId(int? id)
         {
-            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            using (SqlConnection conexao = new SqlConnection(conexaoSqlServer))
             {
                 try
                 {
@@ -154,7 +154,7 @@ namespace ProjetoCurso01.Dao
                     //ele vai verificar se o id digitado existe no banco contando
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
 
-                    if(count == 0)
+                    if (count == 0)
                     {
                         //Se o id não existe retorna um true
                         return true;
@@ -171,7 +171,7 @@ namespace ProjetoCurso01.Dao
         //Método para relatório por Sexo 
         public void RelatorioPorSexo(string sexs)
         {
-            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            using (SqlConnection conexao = new SqlConnection(conexaoSqlServer))
             {
                 try
                 {
@@ -264,7 +264,7 @@ namespace ProjetoCurso01.Dao
         //Método para relatório por data de nascimento
         public void RelatorioPorDataNascimento(DateTime data_nascimento1, DateTime data_nascimento2)
         {
-            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            using (SqlConnection conexao = new SqlConnection(conexaoSqlServer))
             {
                 try
                 {
@@ -305,8 +305,62 @@ namespace ProjetoCurso01.Dao
                 {
                     Console.WriteLine("Erro " + e.Message);
                 }
-            }
+
+
+
+             }
+
         }
 
+        //Método para login
+        public bool VerificaLogin(string senha, string usuario)
+        {
+            bool existeUsuario = false;
+
+            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            {
+                try
+                {
+                    string sql = "SELECT * FROM Usuarios WHERE email =@email AND senha =@senha";
+                    SqlCommand cmd = new SqlCommand(sql, conexao);
+                    cmd.Parameters.AddWithValue("@email",senha);
+                    cmd.Parameters.AddWithValue("@senha",usuario);
+                    conexao.Open();
+                    SqlDataReader tabela = cmd.ExecuteReader();
+
+                    if (tabela.HasRows)
+                    {
+                        existeUsuario = true;
+                        Console.WriteLine("Bem vindo\n");
+                    }     
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Erro " + e.Message);
+                }
+            }
+            return existeUsuario;
+        }
+
+        //Método para cadastrar usuário
+        public void CadastrarUsuario(string email, string senha)
+        {
+            using(SqlConnection conexao = new SqlConnection(conexaoSqlServer))
+            {
+                try
+                {
+                    string sql = "INSERT INTO Usuarios (email,senha) VALUES (@email,@senha)";
+                    SqlCommand cmd = new SqlCommand(sql, conexao);
+                    cmd.Parameters.AddWithValue("@email",email);
+                    cmd.Parameters.AddWithValue("@senha",senha);
+                    conexao.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Erro " + e.Message);
+                }
+            }
+        }
     }
 }
